@@ -27,6 +27,10 @@ export class EventsService {
         location: createEventDto.location,
         startDate,
         endDate,
+        imageUrl: createEventDto.imageUrl,
+        backgroundColor1: createEventDto.backgroundColor1,
+        backgroundColor2: createEventDto.backgroundColor2,
+        registrationOpen: createEventDto.registrationOpen ?? true,
       })
       .returning();
 

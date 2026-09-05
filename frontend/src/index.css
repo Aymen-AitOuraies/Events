@@ -17,3 +17,15 @@
 body { margin: 0; min-width: 320px; }
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
+
+p {
+	overflow-wrap: anywhere;
+}
+
+main > div[aria-hidden="true"] span {
+	border-bottom: 2px solid currentColor;
+}
+
+main select + button {
+	display: none;
+}

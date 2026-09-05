@@ -1,4 +1,10 @@
-import { IsDateString, IsOptional, IsString, MaxLength } from "class-validator";
+import {
+  IsDateString,
+  IsHexColor,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from "class-validator";
 
 export class UpdateEventDto {
   @IsString()
@@ -22,4 +28,20 @@ export class UpdateEventDto {
   @IsDateString()
   @IsOptional()
   endDate?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsHexColor()
+  backgroundColor1?: string;
+
+  @IsOptional()
+  @IsHexColor()
+  backgroundColor2?: string;
+
+  @IsOptional()
+  registrationOpen?: boolean;
 }
