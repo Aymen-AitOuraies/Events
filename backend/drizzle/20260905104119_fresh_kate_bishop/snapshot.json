@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "7164efba-48c7-4357-968b-e8ebae6bca6b",
+  "id": "46f859b7-7516-4f8f-9753-4c00331a1fc6",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -134,19 +134,6 @@
       "generated": null,
       "identity": null,
       "name": "end_date",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "events"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "created_by",
       "entityType": "columns",
       "schema": "public",
       "table": "events"
@@ -488,23 +475,6 @@
       "entityType": "columns",
       "schema": "public",
       "table": "users"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "created_by"
-      ],
-      "schemaTo": "public",
-      "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "events_created_by_users_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "events"
     },
     {
       "nameExplicit": false,
