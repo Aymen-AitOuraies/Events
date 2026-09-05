@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "6813c7bb-f172-4b3e-afca-bd6580e93711",
+  "id": "7164efba-48c7-4357-968b-e8ebae6bca6b",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -485,45 +485,6 @@
       "generated": null,
       "identity": null,
       "name": "password_hash",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "user_role",
-      "typeSchema": "public",
-      "notNull": true,
-      "dimensions": 0,
-      "default": "'STAFF'",
-      "generated": null,
-      "identity": null,
-      "name": "role",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "updated_at",
       "entityType": "columns",
       "schema": "public",
       "table": "users"

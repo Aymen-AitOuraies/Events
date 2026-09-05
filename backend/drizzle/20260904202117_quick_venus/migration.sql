@@ -46,10 +46,7 @@ CREATE TABLE "registrations" (
 CREATE TABLE "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 	"email" varchar(255) NOT NULL UNIQUE,
-	"password_hash" text NOT NULL,
-	"role" "user_role" DEFAULT 'STAFF'::"user_role" NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"password_hash" text NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_created_by_users_id_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id");--> statement-breakpoint
