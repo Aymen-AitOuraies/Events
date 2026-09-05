@@ -12,15 +12,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-
 // ====================
 // USERS
 // ====================
 
-export const userRoleEnum = pgEnum("user_role", [
-  "ADMIN",
-  "STAFF",
-]);
+export const userRoleEnum = pgEnum("user_role", ["ADMIN", "STAFF"]);
 
 export const usersTable = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -29,7 +25,6 @@ export const usersTable = pgTable("users", {
 
   passwordHash: text("password_hash").notNull(),
 });
-
 
 // ====================
 // EVENTS
@@ -48,15 +43,10 @@ export const eventsTable = pgTable("events", {
 
   endDate: timestamp("end_date").notNull(),
 
-  createdBy: uuid("created_by")
-    .notNull()
-    .references(() => usersTable.id),
-
   createdAt: timestamp("created_at").defaultNow().notNull(),
 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
-
 
 // ====================
 // FORM FIELDS
@@ -95,7 +85,6 @@ export const formFieldsTable = pgTable("form_fields", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-
 // ====================
 // REGISTRATIONS
 // ====================
@@ -128,13 +117,9 @@ export const registrationsTable = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    unique("registrations_event_email_unique").on(
-      table.eventId,
-      table.email,
-    ),
+    unique("registrations_event_email_unique").on(table.eventId, table.email),
   ],
 );
-
 
 // ====================
 // REGISTRATION Answers

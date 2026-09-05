@@ -7,7 +7,6 @@ CREATE TABLE "events" (
 	"location" varchar(255),
 	"start_date" timestamp NOT NULL,
 	"end_date" timestamp NOT NULL,
-	"created_by" uuid NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -49,7 +48,6 @@ CREATE TABLE "users" (
 	"password_hash" text NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "events" ADD CONSTRAINT "events_created_by_users_id_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id");--> statement-breakpoint
 ALTER TABLE "form_fields" ADD CONSTRAINT "form_fields_event_id_events_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "registration_answers" ADD CONSTRAINT "registration_answers_registration_id_registrations_id_fkey" FOREIGN KEY ("registration_id") REFERENCES "registrations"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "registration_answers" ADD CONSTRAINT "registration_answers_field_id_form_fields_id_fkey" FOREIGN KEY ("field_id") REFERENCES "form_fields"("id") ON DELETE CASCADE;--> statement-breakpoint

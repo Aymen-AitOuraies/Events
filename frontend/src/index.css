@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+	--font-display: "Space Grotesk", sans-serif;
+	--font-body: "DM Sans", sans-serif;
+}
+
+:root {
+	font-family: var(--font-body);
+	color: #164e63;
+	background: #ecfeff;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+}
+
+body { margin: 0; min-width: 320px; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
