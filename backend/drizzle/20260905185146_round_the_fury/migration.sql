@@ -7,6 +7,10 @@ CREATE TABLE "events" (
 	"location" varchar(255),
 	"start_date" timestamp NOT NULL,
 	"end_date" timestamp NOT NULL,
+	"image_url" varchar(500),
+	"background_color_1" varchar(7),
+	"background_color_2" varchar(7),
+	"registration_open" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -32,14 +36,11 @@ CREATE TABLE "registration_answers" (
 CREATE TABLE "registrations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 	"event_id" uuid NOT NULL,
-	"name" varchar(255) NOT NULL,
-	"email" varchar(255) NOT NULL,
 	"qr_token" varchar(255) NOT NULL UNIQUE,
 	"checked_in" boolean DEFAULT false NOT NULL,
 	"checked_in_at" timestamp,
 	"checked_in_by" uuid,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "registrations_event_email_unique" UNIQUE("event_id","email")
+	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (

@@ -1,0 +1,36 @@
+import { useEffect, useState } from 'react'
+import { ArrowLeft, CalendarDays, CheckCircle2, MapPin } from 'lucide-react'
+import { apiRequest } from '../../lib/api'
+import type { EventItem } from '../../types/event'
+import type { FormField } from '../../types/form-field'
+
+type RegistrationPageProps = { event: EventItem; onBack: () => void }
+type Answers = Record<string, string | string[]>
+
+export function RegistrationPage({ event, onBack }: RegistrationPageProps) {
+  const [fields, setFields] = useState<FormField[]>([])
+  const [answers, setAnswers] = useState<Answers>({})
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+  useEffect(() => {
+    async function load() { try { setFields(await apiRequest<FormField[]>(`/events/${event.id}/form-fields`, null)) } catch (caught) { setError(caught instanceof Error ? caught.message : 'Could not load the registration form') } finally { setLoading(false) } }
+    void load()
+  }, [event.id])
+  function setAnswer(fieldId: string, value: string | string[]) { setAnswers((current) => ({ ...current, [fieldId]: value })) }
+  function toggleCheckbox(fieldId: string, value: string, checked: boolean) { const current = Array.isArray(answers[fieldId]) ? answers[fieldId] as string[] : []; setAnswer(fieldId, checked ? [...current, value] : current.filter((item) => item !== value)) }
+  async function submit() { const emailField = fields.find((field) => field.type === 'EMAIL'); const email = emailField ? answers[emailField.id] : undefined; if (!emailField) { setError('Registration requires an email field.'); return } if (typeof email !== 'string' || !email.trim()) { setError('Email is required.'); return } setSubmitting(true); setError(''); try { await apiRequest(`/events/${event.id}/registrations`, null, { method: 'POST', body: JSON.stringify({ answers: fields.map((field) => ({ fieldId: field.id, value: answers[field.id] ?? (field.type === 'CHECKBOX' ? [] : '') })) }) }); setSubmitted(true) } catch (caught) { setError(caught instanceof Error ? caught.message : 'Could not complete registration') } finally { setSubmitting(false) } }
+  function renderField(field: FormField) {
+    const value = answers[field.id] ?? ''
+    const inputClass = 'mt-2 w-full rounded-lg border border-cyan-100 bg-cyan-50/30 px-3 py-3 text-sm outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10'
+    if (field.type === 'SELECT') return <select value={value as string} onChange={(input) => setAnswer(field.id, input.target.value)} className={inputClass}><option value="">Choose an option</option>{(field.options ?? []).map((option) => <option key={option} value={option}>{option}</option>)}</select>
+    if (field.type === 'RADIO') return <div className="mt-3 space-y-2">{(field.options ?? []).map((option) => <label key={option} className="flex items-center gap-2 text-sm font-normal text-slate-600"><input type="radio" name={field.id} checked={value === option} onChange={() => setAnswer(field.id, option)} className="size-4 accent-cyan-600" />{option}</label>)}</div>
+    if (field.type === 'CHECKBOX') return <div className="mt-3 space-y-2">{(field.options ?? []).map((option) => <label key={option} className="flex items-center gap-2 text-sm font-normal text-slate-600"><input type="checkbox" checked={Array.isArray(value) && value.includes(option)} onChange={(input) => toggleCheckbox(field.id, option, input.target.checked)} className="size-4 accent-cyan-600" />{option}</label>)}</div>
+    const type = field.type === 'PHONE' ? 'tel' : field.type === 'NUMBER' ? 'number' : field.type === 'DATE' ? 'date' : field.type === 'EMAIL' ? 'email' : 'text'
+    return <input required={field.type === 'EMAIL'} type={type} value={value as string} onChange={(input) => setAnswer(field.id, input.target.value)} className={inputClass} />
+  }
+  const lineColors = [event.backgroundColor1 ?? '#0891b2', event.backgroundColor2 ?? '#67e8f9']
+  const lines = [{ top: '16%', left: '-2%', width: '24%' }, { top: '31%', right: '-3%', width: '20%' }, { top: '64%', left: '-4%', width: '18%' }, { top: '82%', right: '4%', width: '26%' }]
+    return <main className="relative min-h-screen overflow-hidden bg-slate-50"><div aria-hidden="true">{lines.map((line, index) => <span key={`${line.top}-${index}`} style={{ ...line, color: lineColors[index % 2] }} className="absolute z-0 h-0.5 rotate-[-12deg] rounded-full opacity-60" />)}</div><header className="relative z-1 mx-auto flex w-[min(760px,calc(100%-32px))] items-center border-b border-cyan-100/70 py-5 sm:w-[min(760px,calc(100%-64px))] sm:py-7"><button onClick={onBack} className="mr-3 grid size-9 place-items-center rounded-lg text-slate-400 transition hover:bg-white hover:text-cyan-700" title="Back to events"><ArrowLeft size={18} /></button><span className="font-display text-sm font-semibold tracking-[0.16em] text-cyan-950">ALC <strong className="text-cyan-600">EVENTS</strong></span></header><section className="relative z-1 mx-auto w-[min(760px,calc(100%-32px))] py-12 sm:w-[min(760px,calc(100%-64px))] sm:py-16"><p className="text-xs font-bold tracking-[0.2em] text-cyan-700">REGISTRATION</p><h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-cyan-950 sm:text-5xl">{event.title}</h1>{event.imageUrl && <img src={event.imageUrl} alt="" className="mt-7 h-52 w-full rounded-2xl object-cover shadow-xl shadow-cyan-900/10" />}<p className="mt-5 leading-7 text-slate-600">{event.description || 'Reserve your place at this event.'}</p><div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-600"><span className="flex items-center gap-1.5"><CalendarDays size={14} className="text-cyan-700" />{new Date(event.startDate).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}</span>{event.location && <span className="flex items-center gap-1.5"><MapPin size={14} className="text-cyan-700" />{event.location}</span>}</div>{submitted ? <div className="mt-10 rounded-2xl border border-emerald-100 bg-white p-8 text-center"><CheckCircle2 className="mx-auto text-emerald-600" size={38} /><h2 className="mt-4 font-display text-2xl font-semibold text-emerald-950">You are registered.</h2><p className="mt-2 text-sm text-emerald-800">Your confirmation will be sent to your email.</p></div> : <div className="mt-10 rounded-2xl border border-white bg-white p-6 shadow-xl shadow-cyan-900/10 sm:p-8">{loading && <p className="text-sm text-slate-500">Loading registration form...</p>}{!loading && fields.length === 0 && <p className="text-sm text-slate-500">Registration is not configured for this event yet.</p>}{!loading && fields.length > 0 && <div className="space-y-5">{fields.map((field) => <label key={field.id} className="block text-sm font-semibold text-cyan-950">{field.label}{field.required && <span className="ml-1 text-cyan-600">*</span>}{renderField(field)}</label>)}{error && <p className="text-sm text-rose-600">{error}</p>}<button onClick={() => void submit()} disabled={submitting} className="w-full rounded-lg bg-cyan-600 py-3.5 font-bold text-white shadow-lg shadow-cyan-600/20 transition hover:bg-cyan-700 disabled:opacity-60">{submitting ? 'Submitting...' : 'Complete registration'}</button></div>}</div>}</section></main>
+}

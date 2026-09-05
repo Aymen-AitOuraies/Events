@@ -43,6 +43,14 @@ export const eventsTable = pgTable("events", {
 
   endDate: timestamp("end_date").notNull(),
 
+  imageUrl: varchar("image_url", { length: 500 }),
+
+  backgroundColor1: varchar("background_color_1", { length: 7 }),
+
+  backgroundColor2: varchar("background_color_2", { length: 7 }),
+
+  registrationOpen: boolean("registration_open").notNull().default(true),
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -78,7 +86,7 @@ export const formFieldsTable = pgTable("form_fields", {
 
   required: boolean("required").notNull().default(false),
 
-  options: jsonb("options"),
+  options: jsonb("options").$type<string[]>(),
 
   position: integer("position").notNull(),
 
@@ -89,38 +97,27 @@ export const formFieldsTable = pgTable("form_fields", {
 // REGISTRATIONS
 // ====================
 
-export const registrationsTable = pgTable(
-  "registrations",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
+export const registrationsTable = pgTable("registrations", {
+  id: uuid("id").defaultRandom().primaryKey(),
 
-    eventId: uuid("event_id")
-      .notNull()
-      .references(() => eventsTable.id, {
-        onDelete: "cascade",
-      }),
-
-    name: varchar("name", { length: 255 }).notNull(),
-
-    email: varchar("email", { length: 255 }).notNull(),
-
-    qrToken: varchar("qr_token", { length: 255 }).notNull().unique(),
-
-    checkedIn: boolean("checked_in").notNull().default(false),
-
-    checkedInAt: timestamp("checked_in_at"),
-
-    checkedInBy: uuid("checked_in_by").references(() => usersTable.id, {
-      onDelete: "set null",
+  eventId: uuid("event_id")
+    .notNull()
+    .references(() => eventsTable.id, {
+      onDelete: "cascade",
     }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => [
-    unique("registrations_event_email_unique").on(table.eventId, table.email),
-  ],
-);
+  qrToken: varchar("qr_token", { length: 255 }).notNull().unique(),
 
+  checkedIn: boolean("checked_in").notNull().default(false),
+
+  checkedInAt: timestamp("checked_in_at"),
+
+  checkedInBy: uuid("checked_in_by").references(() => usersTable.id, {
+    onDelete: "set null",
+  }),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 // ====================
 // REGISTRATION Answers
 // ====================

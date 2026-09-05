@@ -14,11 +14,11 @@ import { UpdateFormFieldDto } from "./dto/update-form-field.dto";
 import { FormFieldsService } from "./form-fields.service";
 
 @Controller("events/:eventId/form-fields")
-@UseGuards(JwtAuthGuard)
 export class FormFieldsController {
   constructor(private readonly formFieldsService: FormFieldsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(
     @Param("eventId") eventId: string,
     @Body() createFormFieldDto: CreateFormFieldDto,
@@ -37,6 +37,7 @@ export class FormFieldsController {
   }
 
   @Patch(":id")
+  @UseGuards(JwtAuthGuard)
   update(
     @Param("eventId") eventId: string,
     @Param("id") id: string,
@@ -46,6 +47,7 @@ export class FormFieldsController {
   }
 
   @Delete(":id")
+  @UseGuards(JwtAuthGuard)
   remove(@Param("eventId") eventId: string, @Param("id") id: string) {
     return this.formFieldsService.remove(eventId, id);
   }
