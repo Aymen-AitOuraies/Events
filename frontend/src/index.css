@@ -29,3 +29,16 @@ main > div[aria-hidden="true"] span {
 main select + button {
 	display: none;
 }
+
+
+#qr-reader {
+  width: 100%;
+  min-height: 320px;
+}
+
+#qr-reader video {
+  display: block !important;
+  width: 100% !important;
+  height: 320px !important;
+  object-fit: cover !important;
+}
