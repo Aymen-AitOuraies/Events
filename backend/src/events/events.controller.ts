@@ -12,13 +12,11 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { mkdir, writeFile } from "node:fs/promises";
-import { extname, join } from "node:path";
-import { randomUUID } from "node:crypto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard/jwt-auth.guard";
 import { CreateEventDto } from "./dto/create-event.dto";
 import { UpdateEventDto } from "./dto/update-event.dto";
 import { EventsService } from "./events.service";
+import { cloudinary } from "../cloudinary";
 
 @Controller("events")
 export class EventsController {
@@ -41,11 +39,37 @@ export class EventsController {
       throw new BadRequestException("Please upload an image file");
     }
 
-    const extension = extname(file.originalname).toLowerCase() || ".jpg";
-    const filename = `${randomUUID()}${extension}`;
-    await mkdir(join(process.cwd(), "uploads"), { recursive: true });
-    await writeFile(join(process.cwd(), "uploads", filename), file.buffer);
-    return { imageUrl: `/uploads/${filename}` };
+    const result = await new Promise<{ secure_url: string }>(
+      (resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "alc-events",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error) {
+              reject(
+                new Error(
+                  typeof error === "string"
+                    ? error
+                    : "Cloudinary image upload failed",
+                ),
+              );
+            } else if (result) {
+              resolve(result);
+            } else {
+              reject(new Error("Cloudinary returned no upload result"));
+            }
+          },
+        );
+
+        uploadStream.end(file.buffer);
+      },
+    );
+
+    return {
+      imageUrl: result.secure_url,
+    };
   }
 
   @Post()
